@@ -1,0 +1,53 @@
+<!doctype html>
+<!--
+Created using JS Bin
+http://bin.webduino.io
+
+Copyright (c) 2017 by anonymous (http://bin.webduino.io/yeqoqi/3/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Webduino Blockly App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="https://webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+  <script src="https://blockly.webduino.io/webduino-blockly.js"></script>
+  <script src="https://blockly.webduino.io/lib/firebase.js"></script>
+  <script src="https://blockly.webduino.io/lib/runtime.min.js"></script>
+</head>
+
+<body><div id="demo-area-01-show"><div><script id="jsbin-javascript">
+var photocell;
+var rgbled;
+
+
+boardReady({board: 'Smart', url: '172.20.10.5'}, function (board) {
+  board.systemReset();
+  board.samplingInterval = 50;
+  photocell = getPhotocell(board, 0);
+  rgbled = getRGBLedCathode(board, 15, 12, 13);
+  rgbled.setColor('#ff00ff');
+  photocell.on(function(val){
+    photocell.detectedVal = val;
+    //alert(photocell.detectedVal);
+    document.getElementById("demo-area-01-show").innerHTML = photocell.detectedVal;
+    if (photocell.detectedVal > 0 && photocell.detectedVal <= 0.2) {
+      rgbled.setColor('#ff0000');
+    } else if (photocell.detectedVal > 0.2 && photocell.detectedVal <= 0.4) {
+      rgbled.setColor('#009900');
+    } else if (photocell.detectedVal > 0.4 && photocell.detectedVal <= 0.6) {
+      rgbled.setColor('#3333ff');
+    } else {
+      rgbled.setColor('#000000');
+    }
+  });
+});
+
+</script>
+</body>
+
