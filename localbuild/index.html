@@ -1,0 +1,70 @@
+<!doctype html>
+
+<meta name="robots" content="noindex">
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Webduino Blockly App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="https://webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+  <script src="https://blockly.webduino.io/webduino-blockly.js"></script>
+  <script src="https://blockly.webduino.io/lib/firebase.js"></script>
+  <script src="https://blockly.webduino.io/lib/runtime.min.js"></script>
+  <script src='voicerss-tts.min.js'></script>
+</head>
+
+<body>
+<h3>設定你需要提醒的事項:</h3>
+<input id="Speakdata" ></input>
+
+<h3>光敏電阻的係數:</h3>
+<div id="demo-area-01-show"></div>
+
+
+<script id="jsbin-javascript">
+var speakdata;
+
+var photocell;
+var rgbled;
+
+speakdata = document.getElementById("Speakdata").value
+
+
+boardReady({board: 'Smart', url: '172.20.10.5'}, function (board) {
+  board.systemReset();
+  board.samplingInterval = 50;
+  photocell = getPhotocell(board, 0);
+  rgbled = getRGBLedCathode(board, 15, 12, 13);
+  rgbled.setColor('#ff00ff');
+  photocell.on(function(val){
+    photocell.detectedVal = val;
+    //alert(photocell.detectedVal);
+    document.getElementById("demo-area-01-show").innerHTML = photocell.detectedVal;
+    if (photocell.detectedVal > 0 && photocell.detectedVal <= 0.2) {
+      rgbled.setColor('#ff0000');
+    } else if (photocell.detectedVal > 0.2 && photocell.detectedVal <= 0.4) {
+      rgbled.setColor('#009900');
+    } else if (photocell.detectedVal > 0.4 && photocell.detectedVal <= 0.6) {
+      rgbled.setColor('#3333ff');
+    } else {
+      rgbled.setColor('#000000');
+    }
+  });
+});
+
+        VoiceRSS.speech({
+            key: '6d45d7fb55e248bc8e172cb9b40e9b20',
+            src: '你好歡迎您來到智慧開關門系統，您可以設定你會忘記的事項！',
+            hl: 'zh-tw',
+            r: 0, 
+            c: 'mp3',
+            f: '44khz_16bit_stereo',
+            ssml: false
+        });
+
+</script>
+
+</body>
+
